@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Program Kriptografi</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <main>
+      <h1>Program Kriptografi</h1>
+      <p class="description">Enkripsi dan dekripsi teks atau file.</p>
+      <form id="workspace">
+        <div class="form-row">
+          <span>Operasi</span>
+          <div class="choices" role="group" aria-label="Operasi">
+            <button
+              type="button"
+              id="encrypt"
+              class="active"
+              aria-pressed="true"
+            >
+              Enkripsi
+            </button>
+            <button type="button" id="decrypt" aria-pressed="false">
+              Dekripsi
+            </button>
+          </div>
+        </div>
+        <div class="form-row">
+          <label for="algorithm">Algoritma</label>
+          <select id="algorithm">
+            <option value="vigenere">Vigenere</option>
+            <option value="autokey">Auto-Key Vigenere</option>
+            <option value="extended">Extended Vigenere</option>
+            <option value="playfair">Playfair</option>
+            <option value="affine">Affine</option>
+            <option value="hill">Hill</option>
+            <option value="super">Super Enkripsi</option>
+          </select>
+        </div>
+        <div id="word-key" class="form-row">
+          <label for="key">Kunci</label>
+          <input id="key" autocomplete="off" placeholder="Masukkan kunci" />
+        </div>
+        <div id="column-field" class="form-row" hidden>
+          <label for="column-key">Kunci kolom</label>
+          <input
+            id="column-key"
+            autocomplete="off"
+            placeholder="Masukkan kunci kolom"
+          />
+        </div>
+        <div id="affine-fields" class="form-row" hidden>
+          <span>Kunci Affine</span>
+          <div class="number-fields">
+            <label for="affine-a">a</label
+            ><input id="affine-a" type="number" value="5" />
+            <label for="affine-b">b</label
+            ><input id="affine-b" type="number" value="8" />
+          </div>
+        </div>
+        <div id="hill-fields" class="form-row" hidden>
+          <span>Matriks kunci</span>
+          <div class="matrix">
+            <input aria-label="Baris 1 kolom 1" type="number" value="3" />
+            <input aria-label="Baris 1 kolom 2" type="number" value="3" />
+            <input aria-label="Baris 2 kolom 1" type="number" value="2" />
+            <input aria-label="Baris 2 kolom 2" type="number" value="5" />
+          </div>
+        </div>
+        <p id="key-hint" class="hint"></p>
+        <div class="section-heading">
+          <h2 id="input-title">Pesan</h2>
+          <div class="choices" role="group" aria-label="Sumber pesan">
+            <button
+              type="button"
+              id="text-tab"
+              class="selected"
+              aria-pressed="true"
+            >
+              Teks
+            </button>
+            <button type="button" id="file-tab" aria-pressed="false">
+              File
+            </button>
+          </div>
+        </div>
+        <div id="text-source">
+          <label class="sr-only" for="input">Pesan masukan</label>
+          <textarea
+            id="input"
+            placeholder="Masukkan pesan..."
+            spellcheck="false"
+          ></textarea>
+          <div class="input-bottom">
+            <label for="input-format"
+              >Format
+              <select id="input-format">
+                <option value="text">Teks biasa</option>
+                <option value="base64">Base64</option>
+              </select>
+            </label>
+            <button type="button" id="example">Isi contoh</button>
+          </div>
+        </div>
+        <div id="file-source" hidden>
+          <label for="file" id="file-name">Pilih file</label>
+          <input type="file" id="file" />
+          <p id="file-detail" class="hint">
+            Teks, gambar, database, audio, atau video. Maksimal 20 MB.
+          </p>
+        </div>
+        <p class="hint" id="input-info">0 karakter</p>
+        <p class="hint" id="algorithm-note"></p>
+        <div class="submit-row">
+          <button type="submit" id="run">Enkripsi</button>
+          <p id="status" role="status" aria-live="polite">
+            Siap memproses pesan.
+          </p>
+        </div>
+        <section class="result-section">
+          <div class="section-heading">
+            <h2>Hasil</h2>
+            <label for="output-format"
+              >Format
+              <select id="output-format">
+                <option value="base64">Base64</option>
+                <option value="text">Teks</option>
+                <option value="hex">Hex</option>
+              </select>
+            </label>
+          </div>
+          <textarea
+            id="output"
+            aria-label="Hasil proses"
+            placeholder="Belum ada hasil."
+            readonly
+            spellcheck="false"
+          ></textarea>
+          <p class="hint" id="output-info">Belum ada hasil</p>
+          <div class="result-actions">
+            <button type="button" id="copy" disabled>Salin</button>
+            <button type="button" id="reuse" disabled>Jadikan input</button>
+          </div>
+          <div class="download-row" id="download-row" hidden>
+            <label for="download-name">Nama file</label>
+            <input id="download-name" value="cipherteks.dat" />
+            <button type="button" id="download">Unduh</button>
+          </div>
+        </section>
+      </form>
+      <details>
+        <summary>Petunjuk penggunaan</summary>
+        <p>
+          Untuk dekripsi, gunakan algoritma dan kunci yang sama. Jika menyalin
+          hasil Base64, pilih format input Base64. Huruf besar dan kecil pada
+          Base64 tidak boleh diubah.
+        </p>
+        <p>
+          Gunakan Extended Vigenere atau Super Enkripsi untuk file biner.
+          Unduhan berisi byte hasil cipher. Saat dekripsi, akhiran .dat dilepas
+          dari nama file. Nama dan ekstensi hasil dapat diubah sebelum diunduh.
+        </p>
+        <p>
+          Playfair menggabungkan J ke I dan menyisipkan X atau Q. Hill menambah
+          X untuk pesan ganjil. Huruf sisipan tetap ada setelah dekripsi.
+        </p>
+      </details>
+    </main>
+    <script type="module" src="app.js"></script>
+  </body>
+</html>
